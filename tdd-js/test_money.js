@@ -14,6 +14,11 @@ class Money {
   }
 }
 
+class Portfolio {
+  add(money) {}
+  evaluate(currency) {}
+}
+
 
 // TEST
 const assert = require('assert');
@@ -36,6 +41,11 @@ let moneyDivide4 = money1.divide(4);
 let expectedMoney = new Money(1000.5, "HUF");
 assert.deepStrictEqual(moneyDivide4, expectedMoney);
 
-
-
-
+// 5 USD + 10 USD = 15 USD
+let fifteenDollars = new Money(15, "USD")
+let fiveDollars = new Money(5, "USD");
+let tenDollars = new Money(10, "USD");
+let portfolio = new Portfolio();
+portfolio.add(fiveDollars);
+portfolio.add(tenDollars);
+assert.deepStrictEqual(portfolio.evaluate("USD"), fifteenDollars);
