@@ -8,6 +8,10 @@ class Money {
   times(count) {
     return new Money(this.amount * count, this.currency);
   }
+
+  divide(num) {
+    return new Money(this.amount / num, this.currency);
+  }
 }
 
 
@@ -25,6 +29,12 @@ let tenEUR = new Money(10, "EUR");
 let twentyEUR = tenEUR.times(2);
 assert.strictEqual(twentyEUR.amount, 20);
 assert.strictEqual(twentyEUR.currency, "EUR");
+
+// 4002 HUF / 4 = 1000.5 HUF
+let money1 = new Money(4002, "HUF");
+let moneyDivide4 = money1.divide(4);
+let expectedMoney = new Money(1000.5, "HUF");
+assert.deepStrictEqual(moneyDivide4, expectedMoney);
 
 
 
