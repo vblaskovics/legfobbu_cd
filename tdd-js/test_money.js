@@ -1,6 +1,6 @@
 // IMPLEMENTATION
 class Money {
-  constructor (amount, currency) {
+  constructor(amount, currency) {
     this.amount = amount;
     this.currency = currency;
   }
@@ -15,13 +15,21 @@ class Money {
 }
 
 class Portfolio {
-  add(money) {}
-  evaluate(currency) {}
+  moneys = [];
+  add(money) {
+    this.moneys.push(money);
+  }
+  evaluate(currency) {
+    let sum = 0;
+    for (const m of this.moneys) {
+      sum += m.amount;
+    }
+    return new Money(sum, currency);
+  }
 }
 
-
 // TEST
-const assert = require('assert');
+const assert = require("assert");
 
 // 5 USD x 2 = 10 USD
 let fiveUSD = new Money(5, "USD");
@@ -42,7 +50,7 @@ let expectedMoney = new Money(1000.5, "HUF");
 assert.deepStrictEqual(moneyDivide4, expectedMoney);
 
 // 5 USD + 10 USD = 15 USD
-let fifteenDollars = new Money(15, "USD")
+let fifteenDollars = new Money(15, "USD");
 let fiveDollars = new Money(5, "USD");
 let tenDollars = new Money(10, "USD");
 let portfolio = new Portfolio();
