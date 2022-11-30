@@ -1,6 +1,6 @@
 <h1>Currency App</h1>
 
-<form #moneyForm="ngForm" (ngSubmit)="addMoney()">
+<form #moneyForm="ngForm" (ngSubmit)="addMoney()" data-test="newMoneyForm">
   <p>
     <label>Amount</label>
     <input type="number" [(ngModel)]="newMoneyAmount" name="amount">
@@ -10,7 +10,7 @@
     <input type="text" [(ngModel)]="newMoneyCurrency" name="currency">
   </p>
   <p>
-    <button type="submit">Add money</button>
+    <button type="submit" data-test="newMoneySubmit">Add money</button>
   </p>
 </form>
 
@@ -20,7 +20,7 @@
       <th>Amount</th>
       <th>Currency</th>
     </tr>
-    <tr *ngFor="let money of portfolio.moneys">
+    <tr *ngFor="let money of portfolio.moneys" data-test="portfolioMoneyItem">
       <td>{{ money.amount }}</td>
       <td>{{ money.currency }}</td>
     </tr>
