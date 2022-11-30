@@ -15,18 +15,33 @@ describe('PortfolioService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should provide portfolio stream', () => {
+  it('should provide a portfolio', () => {
     expect(service.getPortfolio$()).toBeTruthy();
   });
 
   it('should be able to add money to portfolio', () => {
     service.addMoneyToPortfolio({
       amount: 1,
-      currency: "HUF"
+      currency: 'HUF',
     });
-    service.getPortfolio$().subscribe((portfolio) => {
-      expect(portfolio.moneys.length).toBe(1);
+    service.getPortfolio$().subscribe({
+      next: (portfolio) => {
+        expect(portfolio.moneys.length).toBe(1);
+      },
     });
   });
 
+  it('should remove all money from portfolio by currency', () => {
+    const moneyHUF = {
+      amount: 1,
+      currency: 'HUF',
+    };
+    const moneyUSD = {
+      amount: 1,
+      currency: 'USD',
+    };
+    service.addMoneyToPortfolio(moneyHUF,moneyHUF,moneyHUF,moneyUSD);
+    service.removeMoneysByCurrency('HUF');
+    expect(service.getPortfolio().moneys.length).toBe(1);
+  });
 });

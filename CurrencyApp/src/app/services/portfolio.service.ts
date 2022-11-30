@@ -7,17 +7,29 @@ import { Portfolio } from '../model/portfolio';
   providedIn: 'root',
 })
 export class PortfolioService {
-  private portfolio$ = new BehaviorSubject<Portfolio>({ moneys: [] });
+  private _portfolio$ = new BehaviorSubject<Portfolio>({ moneys: [] });
 
   constructor() {}
 
-  addMoneyToPortfolio(money: Money) {
-    const newPortfolio = { ...this.portfolio$.getValue() };
-    newPortfolio.moneys.push(money);
-    this.portfolio$.next(newPortfolio);
+  addMoneyToPortfolio(...money: Money[]) {
+    const newPortfolio = { ...this._portfolio$.getValue() };
+    newPortfolio.moneys = newPortfolio.moneys.concat(money);
+    this._portfolio$.next(newPortfolio);
   }
 
   getPortfolio$(): Observable<Portfolio> {
-    return this.portfolio$.asObservable();
+    return this._portfolio$.asObservable();
+  }
+
+  getPortfolio(): Portfolio {
+    return this._portfolio$.getValue();
+  }
+
+  removeMoneysByCurrency(currency: string) {
+    const newPortfolio = { ...this._portfolio$.getValue() };
+    newPortfolio.moneys = newPortfolio.moneys.filter(
+      (m) => m.currency !== currency
+    );
+    this._portfolio$.next(newPortfolio);
   }
 }
