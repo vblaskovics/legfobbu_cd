@@ -16,8 +16,8 @@ class Money {
 
 class Portfolio {
   moneys = [];
-  add(money) {
-    this.moneys.push(money);
+  add(...moneys) {
+    this.moneys = this.moneys.concat(moneys);
   }
   evaluate(currency) {
     let sum = 0;
@@ -59,14 +59,3 @@ portfolio.add(tenDollars);
 assert.deepStrictEqual(portfolio.evaluate("USD"), fifteenDollars);
 
 // 5 USD + 10 EUR = 17 USD
-
-
-// Bug hotfix - BUG-001
-let p1 = new Portfolio();
-let p2 = new Portfolio();
-
-p1.add(new Money(10, "USD"));
-p2.moneys = p1.moneys;
-p1.add(new Money(10, "USD"));
-assert.deepStrictEqual(p1.evaluate("USD"), new Money(20, "USD"));
-assert.deepStrictEqual(p2.evaluate("USD"), new Money(10, "USD"));
