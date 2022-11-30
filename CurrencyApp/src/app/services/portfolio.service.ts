@@ -4,18 +4,17 @@ import { Money } from '../model/money';
 import { Portfolio } from '../model/portfolio';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PortfolioService {
+  private portfolio$ = new BehaviorSubject<Portfolio>({ moneys: [] });
 
-  private portfolio$ = new BehaviorSubject<Portfolio>(new Portfolio());
-
-  constructor() { }
+  constructor() {}
 
   addMoneyToPortfolio(money: Money) {
-    const currentPortfolio = this.portfolio$.getValue();
-    currentPortfolio.add(money);
-    this.portfolio$.next(currentPortfolio);
+    const newPortfolio = { ...this.portfolio$.getValue() };
+    newPortfolio.moneys.push(money);
+    this.portfolio$.next(newPortfolio);
   }
 
   getPortfolio$(): Observable<Portfolio> {
