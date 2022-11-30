@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Money } from './model/money';
+import { Portfolio } from './model/portfolio';
+import { PortfolioService } from './services/portfolio.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +11,17 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'CurrencyApp';
+
+  newMoneyAmount:number = 0;
+  newMoneyCurrency:string = "";
+
+  portfolio$: Observable<Portfolio>; 
+  constructor(private portfolioService:PortfolioService) {
+    this.portfolio$ = portfolioService.getPortfolio$();
+  }
+
+  addMoney() {
+    const money = new Money(this.newMoneyAmount, this.newMoneyCurrency);
+    this.portfolioService.addMoneyToPortfolio(money);
+  }
 }
