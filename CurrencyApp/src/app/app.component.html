@@ -1,6 +1,8 @@
 <h1>Currency App</h1>
 
-<form #moneyForm="ngForm" (ngSubmit)="addMoney()" data-test="newMoneyForm">
+<app-new-money></app-new-money>
+
+<!-- <form #moneyForm="ngForm" (ngSubmit)="addMoney()" data-test="newMoneyForm">
   <p>
     <label>Amount</label>
     <input type="number" [(ngModel)]="newMoneyAmount" name="amount">
@@ -12,7 +14,7 @@
   <p>
     <button type="submit" data-test="newMoneySubmit">Add money</button>
   </p>
-</form>
+</form> -->
 
 <ng-container *ngIf="(portfolio$ | async) as portfolio; else noPortfolio">
   <table>

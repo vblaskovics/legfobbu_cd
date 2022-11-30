@@ -1,0 +1,13 @@
+<form #moneyForm="ngForm" (ngSubmit)="addMoney()" data-test="newMoneyForm">
+  <p>
+    <label>Amount</label>
+    <input type="number" [(ngModel)]="newMoneyAmount" name="amount">
+  </p>
+  <p>
+    <label>Currency</label>
+    <input type="text" [(ngModel)]="newMoneyCurrency" name="currency">
+  </p>
+  <p>
+    <button type="submit" data-test="newMoneySubmit">Add money</button>
+  </p>
+</form>

@@ -1,13 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
+import { NewMoneyComponent } from './components/new-money/new-money.component';
 
 describe('AppComponent', () => {
   
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent,
+        NewMoneyComponent
       ],
       imports: [
         FormsModule
@@ -58,8 +60,8 @@ describe('AppComponent', () => {
       fixture.detectChanges();
 
       const moneyItems = compiled.querySelectorAll('[data-test="portfolioMoneyItem"]');
-      expect(moneyItems.length).toBe(1);
-    })
+      expect(moneyItems.length).withContext('Not 1 money item has been rendered').toBe(1);
+    });
   
   });
 
