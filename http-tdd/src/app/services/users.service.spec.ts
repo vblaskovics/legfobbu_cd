@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http/testing';
 
 import { UsersService } from './users.service';
-import { tap, filter } from 'rxjs';
+import { tap, filter, skip } from 'rxjs';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -34,6 +34,30 @@ describe('UsersService', () => {
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
+  // Init users
+  beforeEach((done) => {
+    service
+      .getUsers()
+      .pipe(skip(1))
+      .subscribe((users) => {
+        expect(users.length).toBe(1);
+        done();
+      });
+    service.initUsers();
+
+    const dummyResponseData = [
+      {
+        id: 1,
+        name: 'John',
+        username: 'johny',
+        email: 'j',
+      },
+    ];
+    let req = httpTestingController.expectOne(`${testApiUrl}/users`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(dummyResponseData);
+  });
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
@@ -43,37 +67,11 @@ describe('UsersService', () => {
   });
 
   it('should return a list of users', (done) => {
-    service.initUsers();
-    let callCount = 0;
-
-    // First subscription to empty array
-    service.getUsers().pipe(
-      filter(() => callCount === 0),
-      tap(() => {callCount++})
-    ).subscribe((users) => {
-      expect(users.length).withContext("Users array not empty").toBe(0);
-    });
-
-    // Second subscription to array with 1 user
-    service.getUsers().pipe(
-      filter(users => users.length > 0),
-    ).subscribe((users) => {
-      console.log(users);
-      expect(users.length).withContext("Users array must contain user").toBe(1);
-      expect(users[0].id).toBe(3);
+    service.getUsers().subscribe((users) => {
+      expect(users.length).toBe(1);
+      expect(users[0].id).toBe(1);
       done();
     });
-
-    const dummyResponseData = [{
-      id: 3,
-      name: 'John',
-      username: 'johny',
-      email: 'j@gmail.com',
-    }];
-
-    const req = httpTestingController.expectOne(`${testApiUrl}/users`);
-    expect(req.request.method).toEqual('GET');
-    req.flush(dummyResponseData);
   });
 
   it('should return a user by id', () => {
@@ -86,10 +84,12 @@ describe('UsersService', () => {
       id: 3,
       name: 'John',
       username: 'johny',
-      email: 'j@gmail.xom'
+      email: 'j@gmail.xom',
     };
 
-    const req = httpTestingController.expectOne(`${testApiUrl}/users/${userId}`);
+    const req = httpTestingController.expectOne(
+      `${testApiUrl}/users/${userId}`
+    );
     expect(req.request.method).toEqual('GET');
     req.flush(dummyResponseData);
   });

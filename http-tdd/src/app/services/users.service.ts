@@ -24,6 +24,10 @@ export class UsersService {
     });
   }
 
+  getUsersValue(): Array<User> {
+    return this.users$.getValue();
+  }
+
   getUsers(): Observable<Array<User>> {
     return this.users$;
   }

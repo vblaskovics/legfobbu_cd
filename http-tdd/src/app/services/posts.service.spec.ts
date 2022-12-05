@@ -7,13 +7,16 @@ import {
 import { PostsService } from './posts.service';
 import { EnvironmentService } from './environment.service';
 import { Post } from '../models/post';
+import { tap, filter, skip } from 'rxjs';
+import { UsersService } from './users.service';
 
 describe('PostsService', () => {
   let service: PostsService;
   let httpTestingController: HttpTestingController;
   const testApiUrl = 'https://test.com';
+  let usersService:UsersService;
 
-  beforeEach(() => {
+  beforeEach((done) => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
@@ -24,11 +27,29 @@ describe('PostsService', () => {
               return testApiUrl;
             },
           },
-        },
+        }
       ],
     });
     service = TestBed.inject(PostsService);
     httpTestingController = TestBed.inject(HttpTestingController);
+    usersService = TestBed.inject(UsersService);
+    usersService.initUsers();
+    usersService.getUsers().pipe(skip(1)).subscribe((users) => {
+      expect(users.length).toBe(1);
+      done();
+    });
+
+    const dummyResponseData = [
+      {
+        id: 1,
+        name: 'John',
+        username: 'johny',
+        email: 'j',
+      },
+    ];
+    let req = httpTestingController.expectOne(`${testApiUrl}/users`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(dummyResponseData);
   });
 
   it('should be created', () => {
@@ -101,7 +122,7 @@ describe('PostsService', () => {
   });
 
   it('should return a post with user data', () => {
-    service.getPostWithUser(3).subscribe((post) => {
+    service.getPostWithUser(3).pipe(skip(1)).subscribe((post) => {
       expect(post.id).toBe(3);
       expect(post.user?.id).toBe(1);
     });
@@ -126,11 +147,13 @@ describe('PostsService', () => {
     req2.flush(dummyUserResponseData);
   });
 
-  xit('should return a list of posts with user data', () => {
+  it('should return a list of posts with user data', (done) => {
     service.getPostsWithUsers().subscribe((posts) => {
       expect(posts.length).toBe(2);
+      console.log(posts);
       expect(posts[0].user?.name).toBe('John');
-      expect(posts[1].user?.name).toBe('Bill');
+      expect(posts[1].user?.name).toBe('John');
+      done();
     });
 
     const dummyPostsResponseData = [
@@ -141,31 +164,14 @@ describe('PostsService', () => {
         body: 'body',
       },
       {
-        userId: 2,
+        userId: 1,
         id: 4,
         title: 'title',
         body: 'body',
       },
     ];
 
-    const dummyUsersResponseData = [
-      {
-        id: 1,
-        name: 'John',
-        username: 'johny',
-        email: 'j',
-      },
-      {
-        id: 2,
-        name: 'Bill',
-        username: 'billy',
-        email: 'b',
-      },
-    ];
-
     const req1 = httpTestingController.expectOne(`${testApiUrl}/posts`);
     req1.flush(dummyPostsResponseData);
-    const req2 = httpTestingController.expectOne(`${testApiUrl}/users`);
-    req2.flush(dummyUsersResponseData);
   });
 });
