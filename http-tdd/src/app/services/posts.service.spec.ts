@@ -105,24 +105,13 @@ describe('PostsService', () => {
       userId: 1,
     };
 
-    let dummyUser = {
-      id: 1,
-      name: 'John',
-      username: 'johny',
-      email: 'j',
-    };
-
     service.getExpandedPost(dummyPost).subscribe(() => {
       expect(dummyPost.user?.name).toBe('John');
     });
-
-    const req = httpTestingController.expectOne(`${testApiUrl}/users/1`);
-    expect(req.request.method).toEqual('GET');
-    req.flush(dummyUser);
   });
 
   it('should return a post with user data', () => {
-    service.getPostWithUser(3).pipe(skip(1)).subscribe((post) => {
+    service.getPostWithUser(3).subscribe((post) => {
       expect(post.id).toBe(3);
       expect(post.user?.id).toBe(1);
     });
@@ -134,23 +123,13 @@ describe('PostsService', () => {
       body: 'body',
     };
 
-    const dummyUserResponseData = {
-      id: 1,
-      name: 'John',
-      username: 'johny',
-      email: 'j@gmail.com',
-    };
-
     const req1 = httpTestingController.expectOne(`${testApiUrl}/posts/3`);
     req1.flush(dummyPostResponseData);
-    const req2 = httpTestingController.expectOne(`${testApiUrl}/users/1`);
-    req2.flush(dummyUserResponseData);
   });
 
   it('should return a list of posts with user data', (done) => {
     service.getPostsWithUsers().subscribe((posts) => {
       expect(posts.length).toBe(2);
-      console.log(posts);
       expect(posts[0].user?.name).toBe('John');
       expect(posts[1].user?.name).toBe('John');
       done();

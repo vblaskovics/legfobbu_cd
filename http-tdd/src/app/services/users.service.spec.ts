@@ -75,22 +75,8 @@ describe('UsersService', () => {
   });
 
   it('should return a user by id', () => {
-    const userId = 3;
-    service.getUserById(userId).subscribe((user) => {
-      expect(user.id).toBe(userId);
+    service.getUserById(1).subscribe((user) => {
+      expect(user.id).toBe(1);
     });
-
-    const dummyResponseData = {
-      id: 3,
-      name: 'John',
-      username: 'johny',
-      email: 'j@gmail.xom',
-    };
-
-    const req = httpTestingController.expectOne(
-      `${testApiUrl}/users/${userId}`
-    );
-    expect(req.request.method).toEqual('GET');
-    req.flush(dummyResponseData);
   });
 });
