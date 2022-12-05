@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EnvironmentService } from './environment.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http'
 import { User } from '../models/user';
 
@@ -9,13 +9,23 @@ import { User } from '../models/user';
 })
 export class UsersService {
   apiUrl: string = "";
+  users$: BehaviorSubject<Array<User>> = new BehaviorSubject<Array<User>>([]);
 
   constructor(private environmentService: EnvironmentService, private httpClient: HttpClient) {
     this.apiUrl = environmentService.getApiUrl();
   }
 
+  initUsers() {
+    this.httpClient.get<Array<User>>(`${this.apiUrl}/users`).pipe(
+      tap((users) => console.log('Users fetched', users))
+    ).
+    subscribe((users) => {
+      this.users$.next(users);
+    });
+  }
+
   getUsers(): Observable<Array<User>> {
-    return this.httpClient.get<Array<User>>(`${this.apiUrl}/users`)
+    return this.users$;
   }
 
   getUserById(id: number): Observable<User> {

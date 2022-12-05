@@ -7,6 +7,7 @@ import {
 } from '@angular/common/http/testing';
 
 import { UsersService } from './users.service';
+import { tap, filter } from 'rxjs';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -41,10 +42,26 @@ describe('UsersService', () => {
     expect(service.apiUrl).toBe(testApiUrl);
   });
 
-  it('should return a list of users', () => {
-    service.getUsers().subscribe((users) => {
-      expect(users.length).toBe(1);
+  it('should return a list of users', (done) => {
+    service.initUsers();
+    let callCount = 0;
+
+    // First subscription to empty array
+    service.getUsers().pipe(
+      filter(() => callCount === 0),
+      tap(() => {callCount++})
+    ).subscribe((users) => {
+      expect(users.length).withContext("Users array not empty").toBe(0);
+    });
+
+    // Second subscription to array with 1 user
+    service.getUsers().pipe(
+      filter(users => users.length > 0),
+    ).subscribe((users) => {
+      console.log(users);
+      expect(users.length).withContext("Users array must contain user").toBe(1);
       expect(users[0].id).toBe(3);
+      done();
     });
 
     const dummyResponseData = [{
