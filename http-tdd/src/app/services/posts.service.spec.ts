@@ -71,4 +71,30 @@ describe('PostsService', () => {
     expect(req.request.method).toEqual('GET');
     req.flush(dummyResponseData);
   });
+
+  it('should return a post with user data', () => {
+    service.getPostWithUser(3).subscribe((post) => {
+      expect(post.id).toBe(3);
+      expect(post.user?.id).toBe(1);
+    });
+
+    const dummyPostResponseData = {
+      userId: 1,
+      id: 3,
+      title: 'title',
+      body: 'body',
+    };
+
+    const dummyUserResponseData = {
+      id: 1,
+      name: 'John',
+      username: 'johny',
+      email: 'j@gmail.com',
+    };
+
+    const req1 = httpTestingController.expectOne(`${testApiUrl}/posts/3`);
+    req1.flush(dummyPostResponseData);
+    const req2 = httpTestingController.expectOne(`${testApiUrl}/users/1`);
+    req2.flush(dummyUserResponseData);
+  });
 });
