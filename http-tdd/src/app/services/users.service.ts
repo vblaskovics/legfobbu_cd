@@ -17,4 +17,8 @@ export class UsersService {
   getUsers(): Observable<Array<User>> {
     return this.httpClient.get<Array<User>>(`${this.apiUrl}/users`)
   }
+
+  getUserById(id: number): Observable<User> {
+    return this.httpClient.get<User>(`${this.apiUrl}/users/${id}`)
+  }
 }
